@@ -15,7 +15,7 @@ using System.Reflection;
 [assembly: System.Reflection.AssemblyCompanyAttribute("TestBackBanecoNet")]
 [assembly: System.Reflection.AssemblyConfigurationAttribute("Debug")]
 [assembly: System.Reflection.AssemblyFileVersionAttribute("1.0.0.0")]
-[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0")]
+[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+2e9ec5b4542245cbfecf2976963b784a9b192069")]
 [assembly: System.Reflection.AssemblyProductAttribute("TestBackBanecoNet")]
 [assembly: System.Reflection.AssemblyTitleAttribute("TestBackBanecoNet")]
 [assembly: System.Reflection.AssemblyVersionAttribute("1.0.0.0")]

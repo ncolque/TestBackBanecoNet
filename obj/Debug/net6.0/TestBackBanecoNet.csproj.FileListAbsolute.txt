@@ -34,3 +34,4 @@ D:\projects\net\TestBackBanecoNet\obj\Debug\net6.0\TestBackBanecoNet.pdb
 D:\projects\net\TestBackBanecoNet\obj\Debug\net6.0\TestBackBanecoNet.genruntimeconfig.cache
 D:\projects\net\TestBackBanecoNet\obj\Debug\net6.0\ref\TestBackBanecoNet.dll
 D:\projects\net\TestBackBanecoNet\bin\Debug\net6.0\tareas.json
+D:\projects\net\TestBackBanecoNet\obj\Debug\net6.0\TestBackBanecoNet.sourcelink.json

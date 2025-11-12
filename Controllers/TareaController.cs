@@ -1,7 +1,6 @@
 ﻿using Microsoft.AspNetCore.Mvc;
-using System.Text.Json;
-using System.Threading;
 using TestBackBanecoNet.Entities;
+using TestBackBanecoNet.Services;
 
 // For more information on enabling Web API for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
 
@@ -11,135 +10,98 @@ namespace TestBackBanecoNet.Controllers
     [ApiController]
     public class TareaController : ControllerBase
     {
-        private readonly string nombreArchivo = "tareas.json";
+        private readonly TareaService _service;
+
+        public TareaController()
+        {
+            _service = new TareaService();
+        }
 
         // GET: api/<TareaController>
         [HttpGet]
-        public async Task<ActionResult<List<Tarea>>> Get()
+        public async Task<ActionResult> Get()
         {
-            List<Tarea> tareas = new List<Tarea>();
-
-            if (System.IO.File.Exists(nombreArchivo))
+            try
             {
-                string jsonString = await System.IO.File.ReadAllTextAsync(nombreArchivo);
-                tareas = JsonSerializer.Deserialize<List<Tarea>>(jsonString) ?? new List<Tarea>();
+                var tareas = await _service.ObtenerTodasAsync();
+                return Ok(tareas);
             }
-            else
+            catch
             {
-                return NotFound("El archivo .json no existe.");
+                return StatusCode(500, "Error al obtener las tareas.");
             }
-            return Ok(tareas);
         }
 
         // GET api/<TareaController>/5
         [HttpGet("{id}")]
         public async Task<IActionResult> Get(int id)
         {
-            if (System.IO.File.Exists(nombreArchivo))
+            try
             {
-                string jsonString = await System.IO.File.ReadAllTextAsync(nombreArchivo);
-                var tareas = JsonSerializer.Deserialize<List<Tarea>>(jsonString);
-                var tarea = tareas.FirstOrDefault(t => t.Id == id);
+                var tarea = await _service.ObtenerPorIdAsync(id);
+                if (tarea == null)
+                    return NotFound("No se encontró la tarea.");
 
-                if (tarea != null)
-                {
-                    return Ok(tarea);
-                }
+                return Ok(tarea);
             }
-            else
+            catch
             {
-                return NotFound("El archivo .json no existe.");
+                return StatusCode(500, "Error al obtener la tarea.");
             }
-
-            return NotFound();
         }
 
         // POST api/<TareaController>
         [HttpPost]
         public async Task<IActionResult> Post([FromBody] Tarea tarea)
         {
-            List<Tarea> tareas = new List<Tarea>();
-
-            if (System.IO.File.Exists(nombreArchivo))
+            try
             {
-                string jsonString = await System.IO.File.ReadAllTextAsync(nombreArchivo);
-                tareas = JsonSerializer.Deserialize<List<Tarea>>(jsonString) ?? new List<Tarea>();
+                if (tarea == null)
+                    return BadRequest("Datos invalidos.");
+
+                var nueva = await _service.CrearAsync(tarea);
+                return CreatedAtAction(nameof(Get), new { id = nueva.Id }, nueva);
             }
-            else
+            catch
             {
-                tareas = new List<Tarea>();
+                return StatusCode(500, "Error al crear la tarea.");
             }
-
-            if (tareas.Any())
-            {
-                tarea.Id = tareas.Max(t => t.Id) + 1;
-            }
-            else
-            {
-                tarea.Id = 1;
-            }
-
-            tareas.Add(tarea);
-
-            string updateJsonString = JsonSerializer.Serialize(tareas, new JsonSerializerOptions { WriteIndented = true });
-            await System.IO.File.WriteAllTextAsync(nombreArchivo, updateJsonString);
-
-            return Ok(tarea);            
         }
 
         // PUT api/<TareaController>/5
         [HttpPut("{id}")]
         public async Task<IActionResult> Put(int id, [FromBody] Tarea tareaActualizada)
         {
-            if (!System.IO.File.Exists(nombreArchivo))
+            try
             {
-                return NotFound("El archivo .json no existe.");
+                var actualizada = await _service.ActualizarAsync(id, tareaActualizada);
+                if (actualizada == null)
+                    return NotFound("No se encontro la tarea para actualizar.");
+
+                return Ok(actualizada);
             }
-
-            string jsonString = await System.IO.File.ReadAllTextAsync(nombreArchivo);
-            var tareas = JsonSerializer.Deserialize<List<Tarea>>(jsonString);
-            var tareaExistente = tareas.FirstOrDefault(t => t.Id == id);
-
-            if (tareaExistente == null)
+            catch
             {
-                return NotFound("No existe la tarea.");
+                return StatusCode(500, "Error al actualizar la tarea.");
             }
-
-            tareaExistente.Titulo = tareaActualizada.Titulo;
-            tareaExistente.Descripcion = tareaActualizada.Descripcion;
-            tareaExistente.Estado = tareaActualizada.Estado;
-
-            string updateJsonString = JsonSerializer.Serialize(tareas, new JsonSerializerOptions { WriteIndented = true });
-            await System.IO.File.WriteAllTextAsync(nombreArchivo, updateJsonString);
-
-            return Ok(tareaExistente);
         }
 
         // DELETE api/<TareaController>/5
         [HttpDelete("{id}")]
         public async Task<IActionResult> Delete(int id)
         {
-            if (!System.IO.File.Exists(nombreArchivo))
+            try
             {
-                return NotFound("El archivo .json no existe.");
+                var eliminado = await _service.EliminarAsync(id);
+                if (!eliminado)
+                    return NotFound(new { mensaje = "No se encontro la tarea para eliminar." });
+
+                return Ok(new { mensaje = $"Tarea con ID {id} eliminada correctamente." });
             }
-
-            string jsonString = await System.IO.File.ReadAllTextAsync(nombreArchivo);
-            var tareas = JsonSerializer.Deserialize<List<Tarea>>(jsonString);
-
-            var tareaEliminar = tareas.FirstOrDefault(t => t.Id == id);
-
-            if (tareaEliminar == null)
+            catch
             {
-                return NotFound("No existe la tarea.");
+                return StatusCode(500, new { mensaje = "Error al eliminar la tarea." });
             }
-
-            tareas.Remove(tareaEliminar);
-
-            string updateJsonString = JsonSerializer.Serialize(tareas, new JsonSerializerOptions { WriteIndented = true });
-            await System.IO.File.WriteAllTextAsync(nombreArchivo, updateJsonString);
-
-            return Ok("Tarea eliminada.");
         }
     }
 }

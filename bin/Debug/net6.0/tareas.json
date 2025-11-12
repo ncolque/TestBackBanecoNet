@@ -1,14 +1,20 @@
 [
   {
     "Id": 1,
-    "Titulo": "aaa",
-    "Descripcion": "d1",
-    "Estado": "p"
+    "Titulo": "Realizar el back",
+    "Descripcion": "Creo los modelos, etc",
+    "Estado": "pendiente"
   },
   {
-    "Id": 4,
-    "Titulo": "eee",
-    "Descripcion": "d2",
-    "Estado": "zzz"
+    "Id": 2,
+    "Titulo": "Realizar el front",
+    "Descripcion": "Crear los componentes, etc",
+    "Estado": "en-progreso"
+  },
+  {
+    "Id": 3,
+    "Titulo": "Hacer pruebas",
+    "Descripcion": "Probar ambas app, etc",
+    "Estado": "completada"
   }
 ]

@@ -12,33 +12,7 @@
         ],
         "responses": {
           "200": {
-            "description": "Success",
-            "content": {
-              "text/plain": {
-                "schema": {
-                  "type": "array",
-                  "items": {
-                    "$ref": "#/components/schemas/Tarea"
-                  }
-                }
-              },
-              "application/json": {
-                "schema": {
-                  "type": "array",
-                  "items": {
-                    "$ref": "#/components/schemas/Tarea"
-                  }
-                }
-              },
-              "text/json": {
-                "schema": {
-                  "type": "array",
-                  "items": {
-                    "$ref": "#/components/schemas/Tarea"
-                  }
-                }
-              }
-            }
+            "description": "Success"
           }
         }
       },
@@ -160,6 +134,11 @@
   "components": {
     "schemas": {
       "Tarea": {
+        "required": [
+          "descripcion",
+          "estado",
+          "titulo"
+        ],
         "type": "object",
         "properties": {
           "id": {
@@ -167,16 +146,17 @@
             "format": "int32"
           },
           "titulo": {
-            "type": "string",
-            "nullable": true
+            "minLength": 1,
+            "type": "string"
           },
           "descripcion": {
-            "type": "string",
-            "nullable": true
+            "minLength": 1,
+            "type": "string"
           },
           "estado": {
-            "type": "string",
-            "nullable": true
+            "maxLength": 12,
+            "minLength": 0,
+            "type": "string"
           }
         },
         "additionalProperties": false
